@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -30,12 +32,14 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationManager locationManager;
     private FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
     private DatabaseReference mRootReference=firebaseDatabase.getReference();
-    private DatabaseReference mLocReference=mRootReference.child("TryoutLocation");
-    private DatabaseReference mLatReference=mLocReference.child("latitude");
-    private DatabaseReference mLongReference=mLocReference.child("longitude");
+    private DatabaseReference mLocReference=mRootReference.child("co");
+    private DatabaseReference mLatReference=mLocReference.child("lat");
+    private DatabaseReference mLongReference=mLocReference.child("long");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        final DecimalFormat format=new DecimalFormat("#0.00");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -63,6 +67,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     mLatReference.setValue(latitude);
                     double longitude=location.getLongitude();
                     mLongReference.setValue(longitude);
+                    String coord=format.format(latitude)+ " " + format.format(longitude);
+                    Toast.makeText(DriverMapActivity.this, "Coordinates: " + coord, Toast.LENGTH_SHORT).show();
                     LatLng latLng=new LatLng(latitude,longitude);
                     Geocoder geocoder=new Geocoder(getApplicationContext());
                     try {
@@ -102,6 +108,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     mLatReference.setValue(latitude);
                     double longitude=location.getLongitude();
                     mLongReference.setValue(longitude);
+                    String coord=format.format(latitude)+ " " + format.format(longitude);
+                    Toast.makeText(DriverMapActivity.this, "Coordinates: " + coord, Toast.LENGTH_SHORT).show();
                     LatLng latLng=new LatLng(latitude,longitude);
                     Geocoder geocoder=new Geocoder(getApplicationContext());
                     try {

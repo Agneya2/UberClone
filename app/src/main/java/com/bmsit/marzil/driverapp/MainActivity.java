@@ -30,12 +30,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         login = findViewById(R.id.login);
-        login.setOnClickListener(new View.OnClickListener() {
+        regno=findViewById(R.id.regno);
+        if(regno.getText()!=null)
+        {
+            login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,DriverMapActivity.class);
-                startActivity(intent);
+                    Intent intent=new Intent(MainActivity.this,DriverMapActivity.class);
+                    startActivity(intent);
             }
         });
+        }
     }
 }
