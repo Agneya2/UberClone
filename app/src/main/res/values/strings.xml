@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DriverApp</string>
+    <string name="reg_no">Registration Number:</string>
+    <string name="email">Login ID:</string>
+    <string name="pass">Password</string>
+    <string name="track">Log In</string>
+</resources>
