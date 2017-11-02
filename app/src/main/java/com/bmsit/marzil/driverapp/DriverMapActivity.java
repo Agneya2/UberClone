@@ -1,17 +1,16 @@
 package com.bmsit.marzil.driverapp;
 
-import android.*;
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +28,11 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
     LocationManager locationManager;
+    private FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+    private DatabaseReference mRootReference=firebaseDatabase.getReference();
+    private DatabaseReference mLocReference=mRootReference.child("TryoutLocation");
+    private DatabaseReference mLatReference=mLocReference.child("latitude");
+    private DatabaseReference mLongReference=mLocReference.child("longitude");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +42,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference=firebaseDatabase.getReference();
-        final DatabaseReference locReference=databaseReference.child("LocationUpdate");
-
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -55,17 +53,16 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
         {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
 
-                    double latitude = location.getLatitude();
-                    locReference.child("latitude").setValue(latitude);
-                    double longitude = location.getLongitude();
-                    locReference.child("longitude").setValue(longitude);
+                    double latitude=location.getLatitude();
+                    mLatReference.setValue(latitude);
+                    double longitude=location.getLongitude();
+                    mLongReference.setValue(longitude);
                     LatLng latLng=new LatLng(latitude,longitude);
                     Geocoder geocoder=new Geocoder(getApplicationContext());
                     try {
@@ -77,10 +74,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    String message = Double.toString(latitude) + "   " + Double.toString(longitude);
-                    Toast.makeText(getBaseContext(), "Coordinates: " + message, Toast.LENGTH_LONG).show();
-
-
                 }
 
                 @Override
@@ -105,10 +98,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 @Override
                 public void onLocationChanged(Location location) {
 
-                    double latitude = location.getLatitude();
-                    locReference.child("latitude").setValue(latitude);
-                    double longitude = location.getLongitude();
-                    locReference.child("longitude").setValue(longitude);
+                    double latitude=location.getLatitude();
+                    mLatReference.setValue(latitude);
+                    double longitude=location.getLongitude();
+                    mLongReference.setValue(longitude);
                     LatLng latLng=new LatLng(latitude,longitude);
                     Geocoder geocoder=new Geocoder(getApplicationContext());
                     try {
@@ -120,9 +113,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    String message = Double.toString(latitude) + "   " + Double.toString(longitude);
-                    Toast.makeText(getBaseContext(), "Coordinates: " + message, Toast.LENGTH_LONG).show();
-
 
 
                 }
@@ -143,6 +133,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 }
             });
         }
+
     }
 
 
@@ -160,7 +151,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
+        LatLng sydney = new LatLng(-34, 151);
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
