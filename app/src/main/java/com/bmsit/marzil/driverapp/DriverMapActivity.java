@@ -1,6 +1,7 @@
 package com.bmsit.marzil.driverapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -32,13 +33,20 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationManager locationManager;
     private FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
     private DatabaseReference mRootReference=firebaseDatabase.getReference();
-    private DatabaseReference mLocReference=mRootReference.child("co");
-    private DatabaseReference mLatReference=mLocReference.child("lat");
-    private DatabaseReference mLongReference=mLocReference.child("long");
+    private DatabaseReference mLocReference;//=mRootReference.child(varname);
+    private DatabaseReference mLatReference;//=mLocReference.child("lat    ");
+    private DatabaseReference mLongReference;//=mLocReference.child("long");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        Intent intent=getIntent();
+        String varname=intent.getStringExtra("regpass");
+        Toast.makeText(this,varname,Toast.LENGTH_LONG).show();
+        mLocReference=mRootReference.child(varname);
+        mLatReference=mLocReference.child("lat");
+        mLongReference=mLocReference.child("long");
+        //mLocReference=mRootReference.child(name);
         final DecimalFormat format=new DecimalFormat("#0.00");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
