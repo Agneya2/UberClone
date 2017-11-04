@@ -18,6 +18,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +35,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationManager locationManager;
     private FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
     private DatabaseReference mRootReference=firebaseDatabase.getReference();
+    private DatabaseReference mTypeReference=mRootReference.child("Drivers");
     private DatabaseReference mLocReference;//=mRootReference.child(varname);
     private DatabaseReference mLatReference;//=mLocReference.child("lat    ");
     private DatabaseReference mLongReference;//=mLocReference.child("long");
@@ -43,11 +46,11 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         Intent intent=getIntent();
         String varname=intent.getStringExtra("regpass");
         Toast.makeText(this,varname,Toast.LENGTH_LONG).show();
-        mLocReference=mRootReference.child(varname);
+        mLocReference=mTypeReference.child(varname);
         mLatReference=mLocReference.child("lat");
         mLongReference=mLocReference.child("long");
         //mLocReference=mRootReference.child(name);
-        final DecimalFormat format=new DecimalFormat("#0.00");
+        final DecimalFormat format=new DecimalFormat("#0.0000");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -83,7 +86,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         List<Address> addresses=
                                 geocoder.getFromLocation(latitude,longitude,1);
                         mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in the location"));
+                        mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.cabicon)));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -124,7 +127,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         List<Address> addresses=
                                 geocoder.getFromLocation(latitude,longitude,1);
                         mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in the location"));
+                        mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.cabicon)));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                     } catch (IOException e) {
                         e.printStackTrace();
